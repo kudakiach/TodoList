@@ -1,6 +1,9 @@
 <script>
-export default {
 
+import lightImage from "./assets/images/bg-desktop-light.jpg"
+import darkImage from "./assets/images/bg-desktop-dark.jpg"
+export default {
+ 
   data: () => {
     return {
       sun:{
@@ -11,7 +14,10 @@ export default {
         display:"none",
         color:"red"
       },
-
+      image:darkImage,
+      bgImage:{
+        backgroundImage: "url(lightImage)",
+      },
       bgColor:{
         backgroundColor:"hsl(235, 21%, 11%)",
         color:"hsl(234, 39%, 85%)"
@@ -42,15 +48,17 @@ export default {
       this.bgColor.color = "hsl(233, 14%, 35%)"
       this.sun.display = "none"
       this.moon.display = "block"
-      
+      this.bgImage.background="url(lightImage)"
+      this.image = lightImage
+      console.log("image" + this.image)
     },
 
     darkTheme() {
       this.bgColor.backgroundColor = "hsl(235, 21%, 11%)"
-       this.bgColor.color = "hsl(236, 9%, 61%)"
+      this.bgColor.color = "hsl(236, 9%, 61%)"
       this.moon.display = "none"
       this.sun.display = "block"
-     
+     this.image = darkImage
     },
 
     countItems() {
@@ -65,11 +73,13 @@ export default {
   }
 
 }
+
 </script>
 
 <template>
-  <header>
-    <div class="header-content">
+  <header :style="{backgroundImage:'url(' + image+ ')'}">
+  
+    <div  class="header-content">
     <div class="header-title">
       <div class="title">
         <h1>TODO</h1>
@@ -97,27 +107,27 @@ export default {
     
   </header>
   <div class="todo-list">
-  <div v-bind:style="bgColor" class="lists">
-    <div class="items" v-for="(item, index) in todoList" :key="index">
-      <div class="check-btn">
-        <div class="circle"></div>
-      </div>
-      <div v-bind:style="bgColor" class="item-name">{{item.title}}</div>
-      <div class="delete-btn"><i class="fa fa-close"></i></div>
-    </div>
-    <div class="actions">
-        <div class="count"> 5 items left </div>
-        <div class="item-actions">
-        
-              <div class="all"><button class="clear-btn">All</button></div>
-              <div class="active"> <button class="clear-btn">Active</button></div>
-              <div class="completed"><button class="clear-btn">Complete</button></div>
-          
+    <div v-bind:style="bgColor" class="lists">
+      <div class="items" v-for="(item, index) in todoList" :key="index">
+        <div class="check-btn">
+          <div class="circle"></div>
         </div>
-        <div class="clear"><div class="">Clear Complete</div></div>
-    </div>
+        <div v-bind:style="bgColor" class="item-name">{{item.title}}</div>
+        <div class="delete-btn"><i class="fa fa-close"></i></div>
+      </div>
+      <div class="actions">
+          <div class="count"> 5 items left </div>
+          <div class="item-actions">
+          
+                <div class="all"><button class="clear-btn">All</button></div>
+                <div class="active"> <button class="clear-btn">Active</button></div>
+                <div class="completed"><button class="clear-btn">Complete</button></div>
+            
+          </div>
+          <div class="clear"><div class="">Clear Complete</div></div>
+      </div>
 
-  </div>
+    </div>
   
   <div class="card">
     <div class="card-cont">
@@ -156,7 +166,7 @@ header {
   justify-content:center;
   align-items:center;
   color:white;
-  background:url('assets/images/bg-desktop-dark.jpg');
+  background:url('./assets/images/bg-desktop-light.jpg');
   background-repeat:no-repeat;
   background-size:cover;
   min-height:250px
@@ -236,7 +246,7 @@ background-color:red;
   font-size:19px;
   align-items:center;
   color:white;
-  border-bottom:1px solid hsl(235, 24%, 19%);
+  border-bottom: 1px solid hsl(234, 39%, 85%);
 }
 
 .items:hover .delete-btn{
