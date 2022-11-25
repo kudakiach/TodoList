@@ -3,6 +3,20 @@ export default {
 
   data: () => {
     return {
+      sun:{
+        display:"block",
+        color:"#ff0"
+      },
+      moon:{
+        display:"none",
+        color:"red"
+      },
+
+      bgColor:{
+        backgroundColor:"hsl(235, 21%, 11%)",
+        color:"hsl(234, 39%, 85%)"
+      },
+     
       entry: '',
       todoList:[]
     }
@@ -22,6 +36,23 @@ export default {
 
       this.entry = '';
     },
+
+    lightTheme() {
+      this.bgColor.backgroundColor = "hsl(0, 0%, 98%)"
+      this.bgColor.color = "hsl(233, 14%, 35%)"
+      this.sun.display = "none"
+      this.moon.display = "block"
+      
+    },
+
+    darkTheme() {
+      this.bgColor.backgroundColor = "hsl(235, 21%, 11%)"
+       this.bgColor.color = "hsl(236, 9%, 61%)"
+      this.moon.display = "none"
+      this.sun.display = "block"
+     
+    },
+
     countItems() {
     count = 0
       for(var x = 0; x < todoList.length; x++) {
@@ -39,15 +70,24 @@ export default {
 <template>
   <header>
     <div class="header-content">
-      <h1>TODO</h1>
+    <div class="header-title">
+      <div class="title">
+        <h1>TODO</h1>
+      </div>
+      <div class="theme-icon">
+       <i v-bind:style="moon" class=" fa fa-star fa-2x" @click="darkTheme"></i>
+       <i v-bind:style="sun" class=" fa fa-star fa-2x" @click="lightTheme"></i>
+      </div>
+    </div>
+      
       <div class="add-todo">
-      <div class="add-item">
+      <div v-bind:style="bgColor" class="add-item">
         <div class="add-icon">
         <div class="circle" @click="addItem"></div>
           
         </div>
         <form @submit.prevent="addItem">
-          <input type="text" v-model="entry" placeholder="Create a new todo...">
+          <input v-bind:style="bgColor" type="text" v-model="entry" placeholder="Create a new todo...">
         </form>
       </div>
    
@@ -57,38 +97,41 @@ export default {
     
   </header>
   <div class="todo-list">
-  <div class="lists">
+  <div v-bind:style="bgColor" class="lists">
     <div class="items" v-for="(item, index) in todoList" :key="index">
       <div class="check-btn">
         <div class="circle"></div>
       </div>
-      <div class="item-name">{{item.title}}</div>
+      <div v-bind:style="bgColor" class="item-name">{{item.title}}</div>
       <div class="delete-btn"><i class="fa fa-close"></i></div>
     </div>
     <div class="actions">
-        <div class="count"> 5 items </div>
+        <div class="count"> 5 items left </div>
         <div class="item-actions">
-          <div class="act">
+        
               <div class="all"><button class="clear-btn">All</button></div>
               <div class="active"> <button class="clear-btn">Active</button></div>
               <div class="completed"><button class="clear-btn">Complete</button></div>
-          </div>
+          
         </div>
-        <div class="clear">Clear Complete</div>
-    </div>
-  </div>
-   
-
-<h3>Below this</h3>
-    <div class="item-actions-sm">
-     
-          <div class="all"><button class="clear-btn">All</button></div>
-          <div class="active"> <button class="clear-btn">Active</button></div>
-          <div class="completed"><button class="clear-btn">Complete</button></div>
-     
+        <div class="clear"><div class="">Clear Complete</div></div>
     </div>
 
   </div>
+  
+  <div class="card">
+    <div class="card-cont">
+            <div class="all"><button class="clear-btn">All</button></div>
+            <div class="active"> <button class="clear-btn">Active</button></div>
+            <div class="completed"><button class="clear-btn">Complete</button></div>
+        
+    </div>
+  </div>
+    
+
+  </div>
+
+  
   
 </template>
 
@@ -98,14 +141,12 @@ export default {
   width:16px;
   height:16px;
   border-radius:50%;
-  border:1px solid #444;
+  border:1px solid hsl(192, 100%, 67%);
+  cursor:pointer;
 }
 
 .circle:hover { 
-  width:16px;
-  height:16px;
-  border-radius:50%;
-  border:1px solid #444;
+ border-color: hsl(192, 100%, 67%) ;
 }
 
 header {
@@ -125,6 +166,22 @@ header {
   width:60%;
 }
 
+.header-title{
+  display:flex;
+  align-items:center;
+}
+.title{
+  width:50%;
+display:flex;
+justify-content:flex-start;
+}
+.theme-icon {
+width:50%;
+display:flex;
+justify-content:flex-end;
+
+}
+
 .header-content h1{
   margin-bottom:25px;
   font-weight:700;
@@ -141,7 +198,7 @@ header {
 }
 
 form{
-width:80%;
+width:100%;
 }
 
 input[type=text] {
@@ -156,16 +213,17 @@ input[type=text] {
 }
 
 .todo-list{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  position:relative;
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+width:100%;
+background-color:red;
+
 }
 .lists{
   background-color:hsl(235, 21%, 11%);
-  position: absolute;
-  width:60%;
-  clear:both;
+  min-width:70%;
+  margin:auto;
 }
 
 .items{
@@ -173,10 +231,10 @@ input[type=text] {
   flex:100%;
   display:flex;
   gap:10px;
-  align-items:center;
   justitfy-content:center;
   padding: 10px 10px;
   font-size:19px;
+  align-items:center;
   color:white;
   border-bottom:1px solid hsl(235, 24%, 19%);
 }
@@ -199,43 +257,31 @@ display:block;
 .item-name{
   min-width:0 0 80%;
   flex:0 0 80%;
+  text-align:center;
 }
 .delete-btn{ 
   min-width:0 0 10%;
   flex:0 0 10%;
-  display:none;
+  color:hsl(200, 31%, 21%);
 }
 
 .actions {
   display:flex;
-  gap:20px;
-  padding:10px;
-}
-
-.counts {
-  display:flex;
-  min-width:30%;
-  flex:0 0 30%;
-  text-align:center;
+  gap:10px;
   justify-content:center;
-}
-
-.clear {
-display:flex;
-  min-width:30%;
-  flex:0 0 30%;
-  text-align:center;
-  cursor:pointer;
+  align-items:center;
 }
 
 .clear-btn{
   padding:5px;
-  color:white;
   border:none;
   outline:none;
   background-color:transparent;
   cursor:pointer;
+  color:#bbb;
 }
+
+
 @media (min-width: 375px) {
   header {
     display: flex;
@@ -243,53 +289,133 @@ display:flex;
     padding-right: calc(var(--section-gap) / 2);
   }
 
-.item-actions {
+.lists{
+    width:90%;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content: center;
+    
+  }
+
+  .actions{
+  width:100%;
+  pading:10px;
+  clear:both;
+  overlay:hidden;
+  }
+  .act {
+    display:flex;
+    justify-content:center;
+    gap:5px;
+  }
+
+  
+
+  .count {
+    display:flex;
+    width:0 0 30%;
+    flex:0 0 30%;
+    justify-content:center;
+  }
+
+  .item-actions {
   display:flex;
+  gap:10px;
   justify-content:center;
-  gaps:10px;
-  min-width:40%;
-  flex:0 0 40%;
+  width:0 0 30%;
+  flex:0 0 30%;
+
 }
 
-  h3 { font-size:30px; color:red}
-  item-actions-sm{
-    display:none;   
+
+  .clear {
+    display:flex;
+    width:0 0 40%;
+    flex:0 0 40%;
+    cursor:pointer;
+    justify-content:center;
+    
   }
+ 
+  .card{
+    display:none;
+  }
+
 }
+
 @media (max-width: 375px) {
   header {
     display: flex;
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
+     background:url('assets/images/bg-mobile-dark.jpg');
+    background-repeat:no-repeat;
+    background-size:cover;
   }
 
-.header-content {
-    width:100%;
-}
+  .header-content {
+      width:100%;
+  }
 
-  h3 { font-size:30px; display:none; color:red}
-  item-actions-sm{
+  .lists{
+    width:90%;
     display:flex;
-    clear:both;
-    z-index:1;  
-  
+    flex-wrap:wrap;
+    justify-content: center;
   }
-.item-actions {
-  display:none;
-}
-.count {
-font-size:16px;
-font-family: Rubik sans;
-width:50%;
- }
+  .actions{
+      width:100%;
+  }
 
- .complete {
-font-size:16px;
-font-family: Rubik sans;
-width:50%;
- }
+ .card{
+    display:flex;
+    justify-content:center;
+    margin-top:15px;
+   width:90%;
+  }
 
-}
+  .card-cont{
+    display:flex;
+    justify-content:center;
+    width:100%;
+    padding:10px;
+    background-color:#eee;
+  }
+  .all, .complete, .active{
+    flex:1;
+  }
+
+    .item-actions {
+      display:none;
+    }
+
+    .count {
+      font-size:13px;
+      font-family: Rubik sans;
+      width:0 0 50%;
+      flex:0 0 50%;
+      text-align:center;
+    }
+
+    .clear {
+      display:flex;
+      width:0 0 50%;
+      flex:0 0 50%;
+      cursor:pointer;
+      justify-content:center;
+      font-size:13px;
+      
+    }
+
+    .complete {
+        font-size:14px;
+        font-family: Rubik sans;
+        display:flex;
+        justify-content:center;
+        
+    }
+
+  }
 
 
 </style>
