@@ -39,6 +39,7 @@ export default {
       },
       entry: '',
       count: 0,
+      complete: 0,
       todoList:[]
     }
   },
@@ -61,10 +62,20 @@ this.count += 1;
 
      showComplete() {
     
-      this.todoList.filter((item) => {
-          item.complete == false;
-      }) 
+       this.todoList.filter((item) => {
+          item.complete == true;
+      })
     
+    },
+
+    clearComplete() {
+   
+      this.todoList.forEach(item => {
+        if(item.complete == true){ 
+          this.todoList.splice(this.todoList.indexOf(item), this.complete)
+        }
+      })
+      this.complete = 0
     },
 
     deleteItem(item) {
@@ -72,11 +83,16 @@ this.count += 1;
         this.count -= 1;
     },
 
-    completeItem(item) { 
+    completeItem(item) {
+      const itemId = document.getElementById(item.id);
+      const circleId = document.getElementById(item.id + this.todoList.indexOf(item) + 1);
       item.complete = true;
-      this.circle.backgroundColor = "red"
+      
+      this.complete += 1
       this.count -= 1;
-      console.log("Complete: " + item.complete +" Item id: " + item.id)
+      itemId.style.textDecoration ="line-through"
+      circleId.style.background ="linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%))"
+     
     },
 
     lightTheme() {
@@ -145,9 +161,10 @@ this.count += 1;
   </header>
   <div class="todo-list">
     <div v-bind:style="list" class="lists">
-      <div class="items" v-for="(item, index) in todoList" :key="index">
+      <div  class="items" v-for="(item, index) in todoList" :key="index" :id="item.id
+      ">
         <div class="check-btn">
-          <div v-bind:style="circle" class="circle" @click="completeItem(item)"></div>
+          <div :id="item.id + index + 1" v-bind:style="circle" class="circle" @click="completeItem(item)"></div>
         </div>
         <div v-bind:style="list" class="item-name">
           <p v-if="item.complete == true" v-bind:style={lineThrough}>{{item.title}}</p>
@@ -166,7 +183,7 @@ this.count += 1;
                 </div>
             
           </div>
-          <div class="clear"><div class="">Clear Complete</div></div>
+          <div class="clear"><div class="" @click="clearComplete">Clear Complete</div></div>
       </div>
 
     </div>
@@ -214,7 +231,7 @@ header {
 }
 .header-content{
   padding:10px;
-  width:60%;
+  width:50%;
 }
 
 .header-title{
@@ -267,13 +284,13 @@ input[type=text] {
 display:flex;
 flex-wrap:wrap;
 justify-content:center;
-width:100%;
-
+margin:auto;
+width:50%;
 
 }
 .lists{
  /* background-color:hsl(235, 21%, 11%);*/
-  min-width:70%;
+  min-width:100%;
   margin:auto;
 }
 
