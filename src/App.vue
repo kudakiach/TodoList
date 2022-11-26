@@ -2,28 +2,43 @@
 
 import lightImage from "./assets/images/bg-desktop-light.jpg"
 import darkImage from "./assets/images/bg-desktop-dark.jpg"
+import mobileDark from "./assets/images/BG-MOBILE-DARK.jpg"
+//import sunIcon from "./assets/images/ICON-MOON.SVG"
+ const body = document.querySelector('body')
 export default {
  
   data: () => {
     return {
       sun:{
         display:"block",
-        color:"#ff0"
+      },
+      lineThrough:{
+      textDecoration:"line-through"
       },
       moon:{
         display:"none",
-        color:"red"
       },
       image:darkImage,
       bgImage:{
         backgroundImage: "url(lightImage)",
       },
+      inputStyle: {
+        backgroundColor:"hsl(235, 21%, 11%)",
+        color:"hsl(234, 39%, 85%)"
+      },
+      list: {
+       backgroundColor:"hsl(235, 24%, 19%)",
+       color:"hsl(234, 39%, 85%)",
+      },
       bgColor:{
         backgroundColor:"hsl(235, 21%, 11%)",
         color:"hsl(234, 39%, 85%)"
       },
-     
+      circle: {
+        backgroundColor:"none"
+      },
       entry: '',
+      count: 0,
       todoList:[]
     }
   },
@@ -36,40 +51,62 @@ export default {
           title:this.entry,
           complete:false
         }
-
+this.count += 1;
         this.todoList.push(newItem);
       }
 
       this.entry = '';
+     
+    },
+
+     showComplete() {
+    
+      this.todoList.filter((item) => {
+          item.complete == false;
+      }) 
+    
+    },
+
+    deleteItem(item) {
+        this.todoList.splice(this.todoList.indexOf(item), 1)
+        this.count -= 1;
+    },
+
+    completeItem(item) { 
+      item.complete = true;
+      this.circle.backgroundColor = "red"
+      this.count -= 1;
+      console.log("Complete: " + item.complete +" Item id: " + item.id)
     },
 
     lightTheme() {
       this.bgColor.backgroundColor = "hsl(0, 0%, 98%)"
       this.bgColor.color = "hsl(233, 14%, 35%)"
+      this.list.backgroundColor = "hsl(0, 0%, 98%)"
+      this.inputStyle.color = "hsl(233, 14%, 35%)"
+      this.inputStyle.backgroundColor = "hsl(0, 0%, 98%)"
+      this.list.color = "hsl(233, 14%, 35%)"
       this.sun.display = "none"
       this.moon.display = "block"
-      this.bgImage.background="url(lightImage)"
       this.image = lightImage
-      console.log("image" + this.image)
+      body.style.backgroundColor = 'hsl(236, 33%, 92%)'
     },
 
     darkTheme() {
       this.bgColor.backgroundColor = "hsl(235, 21%, 11%)"
+      this.inputStyle.color = "hsl(234, 39%, 85%)"
+      this.inputStyle.backgroundColor = "hsl(235, 24%, 19%)"
       this.bgColor.color = "hsl(236, 9%, 61%)"
+      this.list.backgroundColor = "hsl(235, 24%, 19%)"
+      this.list.color = "hsl(236, 9%, 61%)"
+      
       this.moon.display = "none"
       this.sun.display = "block"
-     this.image = darkImage
+      this.image = darkImage
+      body.style.backgroundColor = 'hsl(235, 21%, 11%)'
     },
 
-    countItems() {
-    count = 0
-      for(var x = 0; x < todoList.length; x++) {
-          if(todoList[x].complete == false){
-            count += 1;
-          }
-      }
-      return count;
-    }
+   
   }
 
 }
@@ -85,19 +122,19 @@ export default {
         <h1>TODO</h1>
       </div>
       <div class="theme-icon">
-       <i v-bind:style="moon" class=" fa fa-star fa-2x" @click="darkTheme"></i>
-       <i v-bind:style="sun" class=" fa fa-star fa-2x" @click="lightTheme"></i>
+       <i  v-bind:style="moon" id="mood-id" class=" fa fa-moon-o fa-1x" @click="darkTheme"></i>
+       <i v-bind:style="sun" id="sun-id" class=" fa fa-sun-o fa-1x" @click="lightTheme"></i>
       </div>
     </div>
       
       <div class="add-todo">
-      <div v-bind:style="bgColor" class="add-item">
+      <div v-bind:style="inputStyle" class="add-item">
         <div class="add-icon">
         <div class="circle" @click="addItem"></div>
           
         </div>
         <form @submit.prevent="addItem">
-          <input v-bind:style="bgColor" type="text" v-model="entry" placeholder="Create a new todo...">
+          <input v-bind:style="inputStyle" type="text" v-model="entry" placeholder="Create a new todo...">
         </form>
       </div>
    
@@ -107,21 +144,26 @@ export default {
     
   </header>
   <div class="todo-list">
-    <div v-bind:style="bgColor" class="lists">
+    <div v-bind:style="list" class="lists">
       <div class="items" v-for="(item, index) in todoList" :key="index">
         <div class="check-btn">
-          <div class="circle"></div>
+          <div v-bind:style="circle" class="circle" @click="completeItem(item)"></div>
         </div>
-        <div v-bind:style="bgColor" class="item-name">{{item.title}}</div>
-        <div class="delete-btn"><i class="fa fa-close"></i></div>
+        <div v-bind:style="list" class="item-name">
+          <p v-if="item.complete == true" v-bind:style={lineThrough}>{{item.title}}</p>
+          <p v-else="item.complete == false">{{item.title}}</p>
+        </div>
+        <div class="delete-btn"><i class="fa fa-close" @click="deleteItem(item)"></i></div>
       </div>
       <div class="actions">
-          <div class="count"> 5 items left </div>
+          <div class="count">{{this.count}} items left </div>
           <div class="item-actions">
           
                 <div class="all"><button class="clear-btn">All</button></div>
                 <div class="active"> <button class="clear-btn">Active</button></div>
-                <div class="completed"><button class="clear-btn">Complete</button></div>
+                <div class="completed">
+                  <button class="clear-btn" @click="showComplete">Complete</button>
+                </div>
             
           </div>
           <div class="clear"><div class="">Clear Complete</div></div>
@@ -166,7 +208,6 @@ header {
   justify-content:center;
   align-items:center;
   color:white;
-  background:url('./assets/images/bg-desktop-light.jpg');
   background-repeat:no-repeat;
   background-size:cover;
   min-height:250px
@@ -227,11 +268,11 @@ display:flex;
 flex-wrap:wrap;
 justify-content:center;
 width:100%;
-background-color:red;
+
 
 }
 .lists{
-  background-color:hsl(235, 21%, 11%);
+ /* background-color:hsl(235, 21%, 11%);*/
   min-width:70%;
   margin:auto;
 }
