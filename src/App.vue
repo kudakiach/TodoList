@@ -89,16 +89,18 @@ export default {
       }
     },
     displayAll() {
-      console.log(this.todoList);
       return this.todoList;
     },
 
     completedTasks() {
-      for (let i = this.todoList.length - 1; i >= 0; i--) {
-        if (this.todoList[i].complete == false) {
-          this.todoList.push(i);
-        }
-      }
+      let newList =
+      this.todoList.filter(item =>
+          item.complete == true
+      )
+
+      let todoList = newList;
+
+      return todoList
     },
 
     activeTasks() {
@@ -194,12 +196,14 @@ export default {
 
   <main>
     <div class="todo-list">
-      <div v-bind:style="list" class="lists">
+      <div  class="lists">
         <div
+        v-bind:style="list"
           class="items"
           v-for="(item, index) in todoList"
           :key="index"
           :id="item.id"
+          draggable="true"
         >
           <div class="check-btn">
             <div
@@ -224,7 +228,7 @@ export default {
           </div>
         </div>
 
-        <div class="actions">
+        <div class="actions"  v-bind:style="list">
           <div class="count">{{ this.count }} items left</div>
           <div class="item-actions">
             <div class="all">
@@ -243,9 +247,8 @@ export default {
             <div class="" @click="clearComplete">Clear Complete</div>
           </div>
         </div>
-      </div>
 
-      <div class="card">
+        <div class="card">
         <div class="card-cont">
           <div class="all"><button class="clear-btn">All</button></div>
           <div class="active"><button class="clear-btn">Active</button></div>
@@ -257,6 +260,10 @@ export default {
       <div class="drag-drop">
         Drag and Drop to reorder list
       </div>
+      </div>
+
+     
+      
     </div>
   </main>
 </template>
@@ -372,16 +379,17 @@ input[type="text"] {
   margin: auto;
   padding: 10px;
   position: absolute;
-  top: -50px;
+  top: -30px;
 }
 
 .items {
-  width: calc(100% - 20px);
+  width: 100%;
   flex: 100%;
   display: flex;
   gap: 10px;
+  /* background-color: rgb(37, 39, 60); */
   justify-content: center;
-  padding: 10px 10px;
+  padding:15px;
   font-size: 19px;
   align-items: center;
   color: white;
@@ -421,13 +429,17 @@ input[type="text"] {
  display:none;
 }
 
-
+.drag-drop{
+  text-align: center;
+}
 
 .actions {
   display: flex;
   gap: 10px;
   justify-content: center;
   align-items: center;
+  /* background-color: rgb(37, 39, 60); */
+  padding:7px;
 }
 
 .clear-btn {
